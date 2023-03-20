@@ -1,21 +1,56 @@
-const convertBtn = document.querySelector('#convertBtn');
+// Audio Kontekstini oluşturun
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioCtx = new AudioContext();
+
+// Kullanıcı tarafından girilen metin kutusunu ve düğmeyi seçin
 const textInput = document.querySelector('#textInput');
-const audioPlayer = document.querySelector('#audioPlayer');
+const convertBtn = document.querySelector('#convertBtn');
 
+// Notların tanımlanması
+const notes = [
+  { note: 'C', frequency: 261.6 },
+  { note: 'D', frequency: 293.7 },
+  { note: 'E', frequency: 329.6 },
+  { note: 'F', frequency: 349.2 },
+  { note: 'G', frequency: 392.0 },
+  { note: 'A', frequency: 440.0 },
+  { note: 'B', frequency: 493.9 }
+];
+
+// Dönüştürme fonksiyonunu oluşturun
+function convertToMelody(text) {
+  const melody = [];
+
+  for (let i = 0; i < text.length; i++) {
+    const character = text[i].toUpperCase();
+    const note = notes.find(n => n.note === character);
+
+    if (note) {
+      melody.push(note.frequency);
+    }
+  }
+
+  return melody;
+}
+
+// Event to be triggered when the Convert button is clicked
 convertBtn.addEventListener('click', () => {
-  // Get the text entered by the user
   const text = textInput.value;
+  const melody = convertToMelody(text);
 
-  // To convert text to a melody, you can perform an operation here
-  // For example, you can take the ASCII code of each character and assign a note accordingly
+  // Creating an oscillator from a sound context
+  const oscillator = audioCtx.createOscillator();
+  oscillator.type = 'sine';
 
-  // A simple example
-  const notes = text.split('').map(char => char.charCodeAt(0));
+  // Assign each note to the oscillator in sequence
+  let time = audioCtx.currentTime;
+  for (let i = 0; i < melody.length; i++) {
+    oscillator.frequency.setValueAtTime(melody[i], time);
+    time += 0.5;
+  }
 
-  // Create a midi file by combining notes
-  const midi = new MidiWriter.Writer([new MidiWriter.Track().addEvent(new MidiWriter.NoteEvent({pitch: notes, duration: '4'}))]);
-
-  // Convert the midi file to a URL and set it as the source of the audio player
-  const audioURL = 'data:audio/midi;base64,' + btoa(midi.build());
-  audioPlayer.src = audioURL;
+  // Finally, set the oscillator to be played and stop it
+  oscillator.connect(audioCtx.destination);
+  oscillator.start();
+  oscillator.stop(time);
 });
