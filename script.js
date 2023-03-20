@@ -33,23 +33,35 @@ function convertToMelody(text) {
   return melody;
 }
 
-// Event to be triggered when the Convert button is clicked
+// Dönüştür düğmesine tıklandığında tetiklenecek olayı ekle
 convertBtn.addEventListener('click', () => {
   const text = textInput.value;
   const melody = convertToMelody(text);
 
-  // Creating an oscillator from a sound context
+  // Melodi notasını göstermek için div öğesini seçin ve içeriğini sıfırlayın
+  const melodyNote = document.querySelector('#melodyNote');
+  melodyNote.innerHTML = '';
+
+  // Melodinin notasını div öğesine yazdırın
+  for (let i = 0; i < melody.length; i++) {
+    const note = notes.find(n => n.frequency === melody[i]);
+    if (note) {
+      melodyNote.innerHTML += note.note + ' ';
+    }
+  }
+
+  // Ses kontekstinden bir osilatör oluşturun
   const oscillator = audioCtx.createOscillator();
   oscillator.type = 'sine';
 
-  // Assign each note to the oscillator in sequence
+  // Osilatöre sırayla her notayı atayın
   let time = audioCtx.currentTime;
   for (let i = 0; i < melody.length; i++) {
     oscillator.frequency.setValueAtTime(melody[i], time);
     time += 0.5;
   }
 
-  // Finally, set the oscillator to be played and stop it
+  // Son olarak, osilatörü çalınacak hale getirin ve durdurun
   oscillator.connect(audioCtx.destination);
   oscillator.start();
   oscillator.stop(time);
