@@ -8,13 +8,13 @@ const convertBtn = document.querySelector('#convertBtn');
 
 // Notların tanımlanması
 const notes = [
-  { note: 'C', frequency: 261.6 },
-  { note: 'D', frequency: 293.7 },
-  { note: 'E', frequency: 329.6 },
-  { note: 'F', frequency: 349.2 },
-  { note: 'G', frequency: 392.0 },
-  { note: 'A', frequency: 440.0 },
-  { note: 'B', frequency: 493.9 }
+  { note: 'C4', frequency: 261.6 },
+  { note: 'D4', frequency: 293.7 },
+  { note: 'E4', frequency: 329.6 },
+  { note: 'F4', frequency: 349.2 },
+  { note: 'G4', frequency: 392.0 },
+  { note: 'A4', frequency: 440.0 },
+  { note: 'B4', frequency: 493.9 }
 ];
 
 // Dönüştürme fonksiyonunu oluşturun
@@ -23,7 +23,7 @@ function convertToMelody(text) {
 
   for (let i = 0; i < text.length; i++) {
     const character = text[i].toUpperCase();
-    const note = notes.find(n => n.note === character);
+    const note = notes.find(n => n.note[0] === character);
 
     if (note) {
       melody.push(note.frequency);
@@ -32,6 +32,7 @@ function convertToMelody(text) {
 
   return melody;
 }
+
 
 // Dönüştür düğmesine tıklandığında tetiklenecek olayı ekle
 convertBtn.addEventListener('click', () => {
