@@ -41,7 +41,7 @@ convertBtn.addEventListener('click', () => {
 
   // Melodi notasını göstermek için div öğesini seçin ve içeriğini sıfırlayın
   const melodyNote = document.querySelector('#melodyNote');
-  melodyNote.innerHTML = '';
+  melodyNote.innerHTML = 'Notaların Harf Karşılığı: ';
 
   // Melodinin notasını div öğesine yazdırın
   for (let i = 0; i < melody.length; i++) {
